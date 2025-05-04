@@ -1,0 +1,14 @@
+{
+    "events":[
+        {
+            "year": 1939,
+            "month": 9,
+            "day": 1,
+            "title": "Nazi Germany Invades Poland",
+            "description": "On September 1, 1939, Germany invaded Poland, marking the beginning of World War II in Europe. This invasion led to Britain and France declaring war on Germany two days later.",
+            "wiki": "https://en.wikipedia.org/wiki/Invasion_of_Poland",
+            "topics": [{"War": "World War II"}],
+            "regions": [{"Continents": "Europe"}, {"Countries": "Poland, Germany"}]
+        }
+    ]
+}
