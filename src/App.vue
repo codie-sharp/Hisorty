@@ -8,22 +8,23 @@
 </template>
 
 <script lang="ts">
-import QueryTool from "./components/QueryTool.vue"
+import EventBuilder from "./EventBuilder/EventBuilder.vue"
 
 export default {
   name: "App",
   components: {
-    QueryTool,
+    EventBuilder,
   },
 }
 
 </script>
 
-<style scoped>
+<style>
 main {
   display: flex;
   flex-flow: column nowrap;
   flex-basis: 100%;
-  padding: 5%;
+  padding: 2%;
 }
+
 </style>

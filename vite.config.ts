@@ -6,13 +6,13 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/Hisorty',
+  base: '/Hisorty', // This is used by GH pages
   plugins: [
     vue(),
     vueDevTools(),
   ],
   build: {
-    outDir: 'docs'
+    outDir: 'docs' // GH pages
   },
   resolve: {
     alias: {
