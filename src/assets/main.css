@@ -11,8 +11,8 @@
 }
 
 body {
-  background-color: var(--bg-dark);
-  color: var(--text-light);
+    background-color: var(--bg-dark);
+    color: var(--text-light);
 }
 
 textarea, input {
@@ -23,8 +23,9 @@ textarea, input {
 button {
     background-color: var(--bg-light);
     color: var(--text-dark);
-    font-size: 1em;
     border: 2px, solid;
+    border-radius: 1em;
+    padding: 1%;
 }
 
 button:hover {

@@ -3,7 +3,7 @@
   </header>
 
   <main>
-    <QueryTool />
+    <EventBuilder />
   </main>
 </template>
 
@@ -16,7 +16,6 @@ export default {
     EventBuilder,
   },
 }
-
 </script>
 
 <style>
@@ -24,7 +23,7 @@ main {
   display: flex;
   flex-flow: column nowrap;
   flex-basis: 100%;
+  align-items: center;
   padding: 2%;
 }
-
 </style>
