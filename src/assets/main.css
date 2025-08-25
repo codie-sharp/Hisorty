@@ -4,20 +4,25 @@
 :root {
     --bg-dark: rgb(25, 25, 25);
     --bg-med: rgb(50, 50, 50);
-    --bg-light: rgb(125, 125, 150);
+    --bg-light: rgb(100, 100, 100);
     --bg-highlight: rgb(150, 150, 200);
     --text-light: rgb(225, 225, 225);
     --text-dark: rgb(0, 0, 0);
+    font-size: large;
+    font-family: monospace;
 }
 
 body {
+    margin: 0; /*Remove default margin*/
     background-color: var(--bg-dark);
     color: var(--text-light);
 }
 
 textarea, input {
-    background-color: var(--bg-med);
-    color: var(--text-light)
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    font-size: large;
+    font-family: monospace;
 }
 
 button {
@@ -26,8 +31,12 @@ button {
     border: 2px, solid;
     border-radius: 1em;
     padding: 1%;
+    margin: 1%;
+    font-weight: bold;
+    font-family: monospace;
 }
 
 button:hover {
     background-color: var(--bg-highlight);
+    cursor: pointer;
 }
