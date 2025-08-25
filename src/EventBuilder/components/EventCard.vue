@@ -1,9 +1,9 @@
 <template>
     <div class="event-card">
         <h3>{{ event.title }}</h3>
+        <img v-if="event.image.length > 0" :src="event.image" :alt="event.title" />
         <p>{{ event.date }}</p>
         <p>{{ event.summary }}</p>
-        <img v-if="event.image.length > 0" :src="event.image" :alt="event.title" />
         <br /><a v-if="event.wikiUrl" :href="event.wikiUrl" target="_blank">Wikipedia</a>
     </div>
 </template>

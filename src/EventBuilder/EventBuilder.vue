@@ -1,10 +1,35 @@
 <template>
-    <div class="input" v-for="[key, value] in Object.entries(eventTemplate)" :key="key">
-        <label>{{ key }}:</label>
-        <input v-model="eventTemplate[key as keyof HistoricalEvent]" />
+    <div id="component-container">
+        <div id="top-container">
+            <div id="left-container">
+                <div>
+                    <label for="date">Date:</label>
+                    <input id="date" v-model="eventTemplate.date" />
+                </div>
+                <div>
+                    <label for="title">Title:</label>
+                    <input id="title" v-model="eventTemplate.title" />
+                </div>
+                <div>
+                    <label for="image">Image:</label>
+                    <input id="image" v-model="eventTemplate.image" />
+                </div>
+                <div>
+                    <label for="wikiUrl">Wiki:</label>
+                    <button @click="getData()">Get Data</button>
+                    <input id="wikiUrl" v-model="eventTemplate.wikiUrl" />
+                </div>
+            </div>
+            <div id="middle-container" />
+            <div id="right-container">
+                <label for="summary">Summary:</label>
+                <textarea id="summary" v-model="eventTemplate.summary"></textarea>
+            </div>
+        </div>
+        <div id="bottom-container">
+            <EventCard :event="eventTemplate" />
+        </div>
     </div>
-    <button @click="getData()">Get Data</button>
-    <EventCard :event="eventTemplate" />
 </template>
 
 <script lang="ts">
@@ -31,7 +56,7 @@ export default {
                 title: '',
                 summary: '',
                 image: '',
-                wikiUrl: ''
+                wikiUrl: 'https://en.wikipedia.org/wiki/Ludwig_van_Beethoven'
             } as HistoricalEvent,
 
             wikipediaUrl: "https://en.wikipedia.org/api/rest_v1/page/summary/",
@@ -84,22 +109,105 @@ ORDER BY ?date`
         async getWikidata(query: string) {
             const response = await fetch('https://query.wikidata.org/sparql?query=' + query  + '&format=json');
             const data = await response.json();
-            const results = data.results.bindings[0];
+            const results = data.results.bindings;
             console.log(results);
 
-            this.eventTemplate.date = results.date.value.substring(0, 10) || ''; // 8 digit date + 2 dashes
-        }
+            this.eventTemplate.date = results[0].date.value.substring(0, 10) || '';
+            const middleContainer = document.getElementById('middle-container');
+            middleContainer!.innerHTML = '';
+
+            if (results.length > 1) {
+                results.forEach((result: any) => {
+                    const date = result.date.value.substring(0, 10);
+
+                    const containerDiv = document.createElement('div');
+                    const label = document.createElement('label');
+                    label.textContent = result.propertyLabel.value;
+
+                    const input = document.createElement('input');
+                    input.value = date;
+
+                    const button = document.createElement('button');
+                    button.textContent = "Change Date";
+                    button.addEventListener('click', () => {
+                        this.eventTemplate.date = date;
+                    });
+
+                    containerDiv.appendChild(label);
+                    containerDiv.appendChild(button);
+                    containerDiv.appendChild(input);
+                    middleContainer!.appendChild(containerDiv);
+                });
+            }
+        },
     }
 }
 </script>
 
 <style>
-div {
+#component-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#top-container {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0.5%;
+    padding: 0.5%;
     border-radius: 1em;
     background-color: var(--bg-med);
 }
 
-.input {
+#left-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin: 0.5%;
+}
+
+#left-container * {
+    flex: 1;
     padding: 1%;
 }
+
+#middle-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin: 0.5%;
+}
+
+#middle-container * {
+    flex: 1;
+    padding: 1%;
+}
+
+#right-container {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    margin: 0.5%;
+}
+
+#right-container textarea {
+    flex: 1;
+    padding: 1%;
+}
+
+#bottom-container {
+    flex: 1;
+    margin: 0.5%;
+    padding: 0.5%;
+    background-color: var(--bg-med);
+    border-radius: 1em;
+}
+
+input {
+    width: 100%;
+}
+
 </style>

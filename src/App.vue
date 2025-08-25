@@ -20,10 +20,6 @@ export default {
 
 <style>
 main {
-  display: flex;
-  flex-flow: column nowrap;
-  flex-basis: 100%;
-  align-items: center;
-  padding: 2%;
+  height: 100vh;
 }
 </style>
