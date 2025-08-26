@@ -29,6 +29,10 @@
         <div id="bottom-container">
             <EventCard :event="eventTemplate" />
         </div>
+        <div>
+            <button @click="saveEvent()">Save Event</button>
+            <button @click="downloadEvents()">Download Events</button>
+        </div>
     </div>
 </template>
 
@@ -36,19 +40,12 @@
 import type { HistoricalEvent } from '@/HistoricalEvent'
 import EventCard from './components/EventCard.vue';
 
-const eventTemplate: HistoricalEvent = { 
-    date: '',
-    title: '',
-    summary: '',
-    image: '',
-    wikiUrl: ''
-}
-
 export default {
     name: "EventBuilder",
     components: {
         EventCard,
     },
+
     data() {
         return {
             eventTemplate: { 
@@ -58,10 +55,17 @@ export default {
                 image: '',
                 wikiUrl: 'https://en.wikipedia.org/wiki/Ludwig_van_Beethoven'
             } as HistoricalEvent,
-
+            allEvents: [] as HistoricalEvent[],
             wikipediaUrl: "https://en.wikipedia.org/api/rest_v1/page/summary/",
         }
     },
+
+    async mounted() {
+        const response = await fetch('/events.json');
+        this.allEvents = await response.json();
+        console.log("Default Events: ", this.allEvents);
+    },
+
     methods: {
         async getData() {
             const qId = await this.getWikipedia();
@@ -95,7 +99,7 @@ ORDER BY ?date`
             const wikipediaQuery = `${this.wikipediaUrl}${page}`;
             const response = await fetch(wikipediaQuery);
             const data = await response.json();
-            console.log(data);
+            console.log("Wikipedia: ", data);
 
             this.eventTemplate.title = data.title;
             this.eventTemplate.summary = data.extract;
@@ -110,13 +114,14 @@ ORDER BY ?date`
             const response = await fetch('https://query.wikidata.org/sparql?query=' + query  + '&format=json');
             const data = await response.json();
             const results = data.results.bindings;
-            console.log(results);
+            console.log("Wikidata: ", results);
 
-            this.eventTemplate.date = results[0].date.value.substring(0, 10) || '';
             const middleContainer = document.getElementById('middle-container');
             middleContainer!.innerHTML = '';
-
-            if (results.length > 1) {
+            
+            if (results.length > 0) {
+                this.eventTemplate.date = results[0].date.value.substring(0, 10) || '';
+                
                 results.forEach((result: any) => {
                     const date = result.date.value.substring(0, 10);
 
@@ -139,6 +144,23 @@ ORDER BY ?date`
                     middleContainer!.appendChild(containerDiv);
                 });
             }
+        },
+
+        saveEvent() {
+            this.allEvents.push(this.eventTemplate);
+            console.log(this.allEvents);
+        },
+
+        downloadEvents() {
+            const data = JSON.stringify(this.allEvents, null, 2);
+            const dataBlob = new Blob([data], { type: "application/json" });
+            const url = URL.createObjectURL(dataBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'events.json';
+            a.click();
+
+            URL.revokeObjectURL(url);
         },
     }
 }
