@@ -147,7 +147,7 @@ ORDER BY ?date`
         },
 
         saveEvent() {
-            this.allEvents.push(this.eventTemplate);
+            this.allEvents.push({ ...this.eventTemplate }); // save new obj with same properties
             console.log(this.allEvents);
         },
 
