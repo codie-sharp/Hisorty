@@ -99,7 +99,7 @@ ORDER BY ?date`
             const wikipediaQuery = `${this.wikipediaUrl}${page}`;
             const response = await fetch(wikipediaQuery);
             const data = await response.json();
-            console.log(data);
+            console.log("Wikipedia: ", data);
 
             this.eventTemplate.title = data.title;
             this.eventTemplate.summary = data.extract;
@@ -114,13 +114,14 @@ ORDER BY ?date`
             const response = await fetch('https://query.wikidata.org/sparql?query=' + query  + '&format=json');
             const data = await response.json();
             const results = data.results.bindings;
-            console.log(results);
+            console.log("Wikidata: ", results);
 
-            this.eventTemplate.date = results[0].date.value.substring(0, 10) || '';
             const middleContainer = document.getElementById('middle-container');
             middleContainer!.innerHTML = '';
-
-            if (results.length > 1) {
+            
+            if (results.length > 0) {
+                this.eventTemplate.date = results[0].date.value.substring(0, 10) || '';
+                
                 results.forEach((result: any) => {
                     const date = result.date.value.substring(0, 10);
 
