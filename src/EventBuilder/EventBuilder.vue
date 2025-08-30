@@ -3,10 +3,6 @@
         <div id="top-container">
             <div id="left-container">
                 <div>
-                    <label for="date">Date:</label>
-                    <input id="date" v-model="eventTemplate.date" />
-                </div>
-                <div>
                     <label for="title">Title:</label>
                     <input id="title" v-model="eventTemplate.title" />
                 </div>
@@ -20,7 +16,13 @@
                     <input id="wikiUrl" v-model="eventTemplate.wikiUrl" />
                 </div>
             </div>
-            <div id="middle-container" />
+            <div id="middle-container">
+                <div v-for="(eventDate, index) in eventTemplate.dates" :key="index">
+                    <label for="{{ eventDate.event }}">{{ eventDate.event }}</label> 
+                    <button @click="deleteDate(index)">Delete</button>
+                    <input id="{{ eventDate.event }}" v-model="eventDate.date"/>
+                </div>
+            </div>
             <div id="right-container">
                 <label for="summary">Summary:</label>
                 <textarea id="summary" v-model="eventTemplate.summary"></textarea>
@@ -37,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import type { HistoricalEvent } from '@/HistoricalEvent'
+import type { EventDate, HistoricalEvent } from '@/HistoricalEvent'
 import EventCard from './components/EventCard.vue';
 
 export default {
@@ -49,11 +51,11 @@ export default {
     data() {
         return {
             eventTemplate: { 
-                date: '',
+                dates: [],
                 title: '',
                 summary: '',
                 image: '',
-                wikiUrl: 'https://en.wikipedia.org/wiki/Ludwig_van_Beethoven'
+                wikiUrl: 'https://en.wikipedia.org/wiki/Michael_Jackson'
             } as HistoricalEvent,
             allEvents: [] as HistoricalEvent[],
             wikipediaUrl: "https://en.wikipedia.org/api/rest_v1/page/summary/",
@@ -79,8 +81,7 @@ export default {
   
   FILTER(?prop IN (
     wdt:P569, wdt:P570, wdt:P580, wdt:P582, wdt:P585,
-    wdt:P571, wdt:P576, wdt:P1619, wdt:P746, wdt:P2031,
-    wdt:P2032, wdt:P577
+    wdt:P571, wdt:P576, wdt:P1619, wdt:P577
   ))
   
   FILTER(DATATYPE(?date) = xsd:dateTime || DATATYPE(?date) = xsd:date)
@@ -115,35 +116,37 @@ ORDER BY ?date`
             const data = await response.json();
             const results = data.results.bindings;
             console.log("Wikidata: ", results);
-
-            const middleContainer = document.getElementById('middle-container');
-            middleContainer!.innerHTML = '';
             
-            if (results.length > 0) {
-                this.eventTemplate.date = results[0].date.value.substring(0, 10) || '';
-                
+            this.eventTemplate.dates = [];
+
+            const eventTypeMap: { [key: string]: string } = {
+                "date of birth": "Birth",
+                "date of death": "Death",
+                "start time": "Start",
+                "end time": "End",
+                "point in time": "Date",
+                "inception": "Founded",
+                "dissolved, abolished or demolished date": "Dissolved",
+                "date of official opening": "Opened",
+                "publication date": "Published"
+            };
+
+            if (results.length > 0) {                
                 results.forEach((result: any) => {
-                    const date = result.date.value.substring(0, 10);
+                    const eventType = result.propertyLabel.value;
 
-                    const containerDiv = document.createElement('div');
-                    const label = document.createElement('label');
-                    label.textContent = result.propertyLabel.value;
-
-                    const input = document.createElement('input');
-                    input.value = date;
-
-                    const button = document.createElement('button');
-                    button.textContent = "Change Date";
-                    button.addEventListener('click', () => {
-                        this.eventTemplate.date = date;
-                    });
-
-                    containerDiv.appendChild(label);
-                    containerDiv.appendChild(button);
-                    containerDiv.appendChild(input);
-                    middleContainer!.appendChild(containerDiv);
+                    const eventDate: EventDate = {
+                        event: eventTypeMap[eventType] || eventType,
+                        date: result.date.value.substring(0, 10)
+                    }
+                    this.eventTemplate.dates.push(eventDate);
                 });
             }
+            console.log("eventTemplate.dates: ", this.eventTemplate.dates);
+        },
+
+        deleteDate(index: number) {
+            this.eventTemplate.dates.splice(index, 1);
         },
 
         saveEvent() {

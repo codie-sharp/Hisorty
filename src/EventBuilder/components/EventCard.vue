@@ -1,10 +1,10 @@
 <template>
     <div class="event-card">
         <h3>{{ event.title }}</h3>
-        <img v-if="event.image.length > 0" :src="event.image" :alt="event.title" />
-        <p>{{ event.date }}</p>
+        <img :src="event.image" :alt="event.title" />
+        <p>{{ event.dates }}</p>
         <p>{{ event.summary }}</p>
-        <br /><a v-if="event.wikiUrl" :href="event.wikiUrl" target="_blank">Wikipedia</a>
+        <br /><a :href="event.wikiUrl" target="_blank">Wikipedia</a>
     </div>
 </template>
 
