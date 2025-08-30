@@ -7,7 +7,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 // Check if the command was serve (npm run dev)
 export default defineConfig(({ command }) => {
   return {
-    base: command === 'serve' ? '/' : '/Hisorty', // /Hisorty for GH pages
+    base: command === 'serve' ? '/' : '/Hisorty/', // /Hisorty for GH pages
     plugins: [
       vue(),
       vueDevTools(),
