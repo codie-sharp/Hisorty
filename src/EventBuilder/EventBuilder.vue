@@ -63,7 +63,7 @@ export default {
     },
 
     async mounted() {
-        const response = await fetch('/events.json');
+        const response = await fetch(`${import.meta.env.BASE_URL}events.json`);
         this.allEvents = await response.json();
         console.log("Default Events: ", this.allEvents);
     },
